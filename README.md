@@ -1,7 +1,13 @@
 employee_network_plot
 ==============================
 
-Employee network plot
+Converts the bamboohr organization chart into a networkx plot.
+
+How to Use
+==========
+1) Visit bamboohr > employees > tree chart
+2) View source of the site and copy the "OrgChart" json
+3) ...
 
 Project Organization
 ------------
