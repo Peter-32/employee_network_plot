@@ -1,0 +1,158 @@
+import json
+import networkx as nx
+from datetime import datetime
+import matplotlib.pyplot as plt
+%matplotlib inline
+plt.rc('figure', figsize=[16,16])
+
+date = datetime.strptime('2020-01-14', '%Y-%m-%d')
+
+G = nx.Graph()
+# G=nx.cubical_graph()
+pos=nx.spring_layout(G)
+
+job_titles = []
+locations = []
+department_names = []
+edge_list = []
+
+
+with open('../../data/raw/data.json') as json_file:
+    data = json.load(json_file)
+    # G.add_node("Top position")
+    for person1 in data['directReports']:
+        if date > datetime.strptime(person1['hireDate'], '%Y-%m-%d'):
+            job_titles.append(person1['jobTitle'])
+            locations.append(location_mapping[person1['location']])
+            department_names.append(str(person1['departmentName']))
+            # G.add_node(person1['name'])
+            department_nodes[str(person1['departmentName'])].append(person1['name'])
+            location_nodes[location_mapping[person1['location']]].append(person1['name'])
+            edge_list.append((person1['name'], "Top position"))
+            department_edges[str(person1['departmentName'])].append((person1['name'], "Top position"))
+            location_edges[location_mapping[person1['location']]].append((person1['name'], "Top position"))
+            person1_name = person1['name']
+        else:
+            person1_name = "Top position"
+        for person2 in person1['directReports']:
+            if date > datetime.strptime(person2['hireDate'], '%Y-%m-%d'):
+                job_titles.append(person2['jobTitle'])
+                locations.append(location_mapping[person2['location']])
+                department_names.append(str(person2['departmentName']))
+                # G.add_node(person2['name'])
+                department_nodes[str(person2['departmentName'])].append(person2['name'])
+                location_nodes[location_mapping[person2['location']]].append(person2['name'])
+                edge_list.append((person2['name'], person1_name))
+                department_edges[str(person2['departmentName'])].append((person2['name'], person1_name))
+                location_edges[location_mapping[person2['location']]].append((person2['name'], person1_name))
+                person2_name = person2['name']
+            else:
+                person2_name = person1['name'] if date > datetime.strptime(person1['hireDate'], '%Y-%m-%d') else "Top position"
+            for person3 in person2['directReports']:
+                if date > datetime.strptime(person3['hireDate'], '%Y-%m-%d'):
+                    job_titles.append(person3['jobTitle'])
+                    locations.append(location_mapping[person3['location']])
+                    department_names.append(str(person3['departmentName']))
+                    # G.add_node(person3['name'])
+                    department_nodes[str(person3['departmentName'])].append(person3['name'])
+                    location_nodes[location_mapping[person3['location']]].append(person3['name'])
+                    edge_list.append((person3['name'], person2_name))
+                    department_edges[str(person3['departmentName'])].append((person3['name'], person2_name))
+                    location_edges[location_mapping[person3['location']]].append((person3['name'], person2_name))
+                    person3_name = person3['name']
+                else:
+                    person3_name = person2['name'] if date > datetime.strptime(person2['hireDate'], '%Y-%m-%d') else person1['name'] if date > datetime.strptime(person1['hireDate'], '%Y-%m-%d') else "Top position"
+                for person4 in person3['directReports']:
+                    if date > datetime.strptime(person4['hireDate'], '%Y-%m-%d'):
+                        job_titles.append(person4['jobTitle'])
+                        locations.append(location_mapping[person4['location']])
+                        department_names.append(str(person4['departmentName']))
+                        # G.add_node(person4['name'])
+                        department_nodes[str(person4['departmentName'])].append(person4['name'])
+                        location_nodes[location_mapping[person4['location']]].append(person4['name'])
+                        edge_list.append((person4['name'], person3_name))
+                        department_edges[str(person4['departmentName'])].append((person4['name'], person3_name))
+                        location_edges[location_mapping[person4['location']]].append((person4['name'], person3_name))
+                        person4_name = person4['name']
+                    else:
+                        person4_name = person3['name'] if date > datetime.strptime(person3['hireDate'], '%Y-%m-%d') else person2['name'] if date > datetime.strptime(person2['hireDate'], '%Y-%m-%d') else person1['name'] if date > datetime.strptime(person1['hireDate'], '%Y-%m-%d') else "Top position"
+                    for person5 in person4['directReports']:
+                        if date > datetime.strptime(person5['hireDate'], '%Y-%m-%d'):
+                            job_titles.append(person5['jobTitle'])
+                            locations.append(location_mapping[person5['location']])
+                            department_names.append(str(person5['departmentName']))
+                            # G.add_node(person5['name'])
+                            department_nodes[str(person5['departmentName'])].append((person1['name']))
+                            location_nodes[location_mapping[person5['location']]].append(person5['name'])
+                            edge_list.append((person5['name'], person4_name))
+                            department_edges[str(person5['departmentName'])].append((person5['name'], person4_name))
+                            location_edges[location_mapping[person5['location']]].append((person5['name'], person4_name))
+                        else:
+                            pass
+
+
+
+
+nx.draw_networkx_nodes(G,pos,
+                       nodelist=department_nodes['Product Management'],
+                       node_color='#b5a265',
+                       with_labels=False,
+                        label='Product Management',
+                   alpha=0.8)
+nx.draw_networkx_nodes(G,pos,
+                       nodelist=department_nodes['Sales'],
+                       node_color='#d43a2f',
+                       with_labels=False,
+                       label='Sales',
+                   alpha=0.8)
+nx.draw_networkx_nodes(G,pos,
+                       nodelist=department_nodes['None'],
+                       node_color='#b5abaa',
+                       with_labels=False,
+                       label='None',
+                   alpha=0.8)
+nx.draw_networkx_nodes(G,pos,
+                       nodelist=department_nodes['G&A'],
+                       node_color='#150782',
+                       with_labels=False,
+                       label='Executive',
+                   alpha=0.8)
+nx.draw_networkx_nodes(G,pos,
+                       nodelist=department_nodes['Finance'],
+                       node_color='#17cf0a',
+                       with_labels=False,
+                       label='Finance',
+                   alpha=0.8)
+nx.draw_networkx_nodes(G,pos,
+                       nodelist=department_nodes['Support and Operations'],
+                       node_color='#faf619',
+                       with_labels=False,
+                       label='Support and Operations',
+                   alpha=0.8)
+nx.draw_networkx_nodes(G,pos,
+                       nodelist=department_nodes['Marketing'],
+                       node_color='#ffb700',
+                       with_labels=False,
+                       label='Marketing',
+                   alpha=0.8)
+nx.draw_networkx_nodes(G,pos,
+                       nodelist=department_nodes['Technology'],
+                       node_color='#07deed',
+                       with_labels=False,
+                       label='Technology',
+                   alpha=0.8)
+nx.draw_networkx_nodes(G,pos,
+                       nodelist=department_nodes['People'],
+                       node_color='#e3d698',
+                       with_labels=False,
+                       label='People',
+                   alpha=0.8)
+
+
+nx.draw_networkx_edges(G,pos,
+                       edgelist=edge_list,
+                       width=8,alpha=0.5)
+
+
+# nx.draw(G, with_labels=False, font_weight='bold')
+plt.legend(loc='fit')

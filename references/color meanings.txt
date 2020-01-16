@@ -1,0 +1,20 @@
+Product Management: Dark Brown #b5a265
+Sales: Red #d43a2f
+None: Gray #b5abaa
+G&A: Dark blue #150782
+Finance: Green #17cf0a
+Support and Operations: Yellow #faf619
+Marketing: Orange #ffb700
+Technology: Light blue #07deed
+People: Beige #e3d698
+
+
+department_nodes = {'Product Management': [],
+ 'Sales': [],
+ 'None': [],
+ 'G&A': [],
+ 'Finance': [],
+ 'Support and Operations': [],
+ 'Marketing': [],
+ 'Technology': [],
+ 'People': []}
