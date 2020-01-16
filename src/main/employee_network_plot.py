@@ -37,27 +37,6 @@ location_mapping = {'US-OH-Columbus': 'Columbus',
  'Nepal (US-WA-Seattle': 'Seattle',
  'US-HI-Remote (Santa Barbara)': 'Remote',
  }
-department_nodes = {'Product Management': [],
- 'Sales': [],
- 'None': [],
- 'G&A': [],
- 'Finance': [],
- 'Support and Operations': [],
- 'Marketing': [],
- 'Technology': [],
- 'People': []
- }
-location_nodes = {'Singapore': [],
- 'Columbus': [],
- 'Seattle': [],
- 'Shanghai': [],
- 'New York': [],
- 'London': [],
- 'Santa Barbara': [],
- 'Cape Town': [],
- 'Remote': [],
- 'Sydney': []
- }
 department_color_mapping = {
     'Product Management': '#b5a265', # Dark brown
     'Sales': '#d43a2f', # Red
@@ -87,6 +66,27 @@ def draw_graph(year='2019', color_by='department'):
     G = nx.Graph(k=0.8,iterations=50)
     job_titles, locations, names, department_names, edge_list = [], [], [], [], []
     date = datetime.strptime('{}-12-31'.format(year), '%Y-%m-%d')
+    department_nodes = {'Product Management': [],
+     'Sales': [],
+     'None': [],
+     'G&A': [],
+     'Finance': [],
+     'Support and Operations': [],
+     'Marketing': [],
+     'Technology': [],
+     'People': []
+     }
+    location_nodes = {'Singapore': [],
+     'Columbus': [],
+     'Seattle': [],
+     'Shanghai': [],
+     'New York': [],
+     'London': [],
+     'Santa Barbara': [],
+     'Cape Town': [],
+     'Remote': [],
+     'Sydney': []
+     }
 
     # Read file
     with open('../../data/raw/data.json') as json_file:
@@ -101,8 +101,6 @@ def draw_graph(year='2019', color_by='department'):
                 department_nodes[str(person1['departmentName'])].append(person1['name'])
                 location_nodes[location_mapping[person1['location']]].append(person1['name'])
                 G.add_edge(person1['name'], "Top position")
-                department_edges[str(person1['departmentName'])].append((person1['name'], "Top position"))
-                location_edges[location_mapping[person1['location']]].append((person1['name'], "Top position"))
                 person1_name = person1['name']
             else:
                 person1_name = "Top position"
@@ -116,8 +114,6 @@ def draw_graph(year='2019', color_by='department'):
                     department_nodes[str(person2['departmentName'])].append(person2['name'])
                     location_nodes[location_mapping[person2['location']]].append(person2['name'])
                     G.add_edge(person2['name'], person1_name)
-                    department_edges[str(person2['departmentName'])].append((person2['name'], person1_name))
-                    location_edges[location_mapping[person2['location']]].append((person2['name'], person1_name))
                     person2_name = person2['name']
                 else:
                     person2_name = person1['name'] if date > datetime.strptime(person1['hireDate'], '%Y-%m-%d') else "Top position"
@@ -131,8 +127,6 @@ def draw_graph(year='2019', color_by='department'):
                         department_nodes[str(person3['departmentName'])].append(person3['name'])
                         location_nodes[location_mapping[person3['location']]].append(person3['name'])
                         G.add_edge(person3['name'], person2_name)
-                        department_edges[str(person3['departmentName'])].append((person3['name'], person2_name))
-                        location_edges[location_mapping[person3['location']]].append((person3['name'], person2_name))
                         person3_name = person3['name']
                     else:
                         person3_name = person2['name'] if date > datetime.strptime(person2['hireDate'], '%Y-%m-%d') else person1['name'] if date > datetime.strptime(person1['hireDate'], '%Y-%m-%d') else "Top position"
@@ -146,8 +140,6 @@ def draw_graph(year='2019', color_by='department'):
                             department_nodes[str(person4['departmentName'])].append(person4['name'])
                             location_nodes[location_mapping[person4['location']]].append(person4['name'])
                             G.add_edge(person4['name'], person3_name)
-                            department_edges[str(person4['departmentName'])].append((person4['name'], person3_name))
-                            location_edges[location_mapping[person4['location']]].append((person4['name'], person3_name))
                             person4_name = person4['name']
                         else:
                             person4_name = person3['name'] if date > datetime.strptime(person3['hireDate'], '%Y-%m-%d') else person2['name'] if date > datetime.strptime(person2['hireDate'], '%Y-%m-%d') else person1['name'] if date > datetime.strptime(person1['hireDate'], '%Y-%m-%d') else "Top position"
@@ -161,8 +153,6 @@ def draw_graph(year='2019', color_by='department'):
                                 department_nodes[str(person5['departmentName'])].append((person5['name']))
                                 location_nodes[location_mapping[person5['location']]].append(person5['name'])
                                 G.add_edge(person5['name'], person4_name)
-                                department_edges[str(person5['departmentName'])].append((person5['name'], person4_name))
-                                location_edges[location_mapping[person5['location']]].append((person5['name'], person4_name))
                                 person5_name = person5['name']
                             else:
                                 person5_name = person4['name'] if date > datetime.strptime(person4['hireDate'], '%Y-%m-%d') else person3['name'] if date > datetime.strptime(person3['hireDate'], '%Y-%m-%d') else person2['name'] if date > datetime.strptime(person2['hireDate'], '%Y-%m-%d') else person1['name'] if date > datetime.strptime(person1['hireDate'], '%Y-%m-%d') else "Top position"
@@ -223,8 +213,11 @@ def draw_graph(year='2019', color_by='department'):
     nx.draw(G, with_labels=True, node_color=colors)
     plt.legend(handles=legend_elements, loc='fit')
     plt.savefig('../../data/output/{}_graph_{}.png'.format(color_by, year))
+    G.clear()
+    plt.clf()
 
 # Execute
 for year in range(2007, 2020):
+    print("Saving graphs for year", year, "in data/output/")
     draw_graph(str(year), "department")
     draw_graph(str(year), "location")
