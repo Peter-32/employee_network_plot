@@ -7,7 +7,7 @@ How to Use
 ==========
 1) Visit bamboohr > employees > tree chart
 2) View source of the site and copy the "OrgChart" json
-3) ...
+3) Run the script
 
 Project Organization
 ------------
